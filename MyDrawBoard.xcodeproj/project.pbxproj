@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CF52546C35E00624CD8 /* DrawBoard.swift */; };
+		5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */; };
 		5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA522E42546C1460013C7AA /* AppDelegate.swift */; };
 		5BA522E72546C1460013C7AA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA522E62546C1460013C7AA /* SceneDelegate.swift */; };
 		5BA522E92546C1460013C7AA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA522E82546C1460013C7AA /* ViewController.swift */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B660CF52546C35E00624CD8 /* DrawBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoard.swift; sourceTree = "<group>"; };
+		5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAShapeLayerNode.swift; sourceTree = "<group>"; };
 		5BA522E12546C1460013C7AA /* MyDrawBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyDrawBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA522E42546C1460013C7AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BA522E62546C1460013C7AA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -101,9 +105,11 @@
 		5BA522E32546C1460013C7AA /* MyDrawBoard */ = {
 			isa = PBXGroup;
 			children = (
+				5BA5231C2546C16B0013C7AA /* Model */,
+				5BA5231B2546C15E0013C7AA /* Controller */,
+				5BA5231A2546C1560013C7AA /* View */,
 				5BA522E42546C1460013C7AA /* AppDelegate.swift */,
 				5BA522E62546C1460013C7AA /* SceneDelegate.swift */,
-				5BA522E82546C1460013C7AA /* ViewController.swift */,
 				5BA522EA2546C1460013C7AA /* Main.storyboard */,
 				5BA522F02546C1470013C7AA /* Assets.xcassets */,
 				5BA522F22546C1470013C7AA /* LaunchScreen.storyboard */,
@@ -129,6 +135,30 @@
 				5BA5230B2546C1480013C7AA /* Info.plist */,
 			);
 			path = MyDrawBoardUITests;
+			sourceTree = "<group>";
+		};
+		5BA5231A2546C1560013C7AA /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5BA5231B2546C15E0013C7AA /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5BA522E82546C1460013C7AA /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5BA5231C2546C16B0013C7AA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
+				5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,8 +293,10 @@
 			files = (
 				5BA522EF2546C1460013C7AA /* MyDrawBoard.xcdatamodeld in Sources */,
 				5BA522E92546C1460013C7AA /* ViewController.swift in Sources */,
+				5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */,
 				5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */,
 				5BA522E72546C1460013C7AA /* SceneDelegate.swift in Sources */,
+				5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
