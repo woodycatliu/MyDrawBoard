@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     
     let board : DrawBoard = {
         let board = DrawBoard()
-        board.translatesAutoresizingMaskIntoConstraints = false
+//        board.translatesAutoresizingMaskIntoConstraints = false
         board.backgroundColor = .black
         return board
     }()
@@ -47,10 +47,12 @@ class ViewController: UIViewController {
         self.view.addSubview(nextButton)
         
         NSLayoutConstraint.activate([
-            self.board.topAnchor.constraint(equalTo: self.view.topAnchor,constant: self.view.safeAreaInsets.top),
-            self.board.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            self.board.bottomAnchor.constraint(equalTo: self.backButton.topAnchor,constant: 0),
-            self.board.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+//            self.board.topAnchor.constraint(equalTo: self.view.topAnchor,constant: self.view.safeAreaInsets.top),
+//            self.board.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+//            self.board.bottomAnchor.constraint(equalTo: self.backButton.topAnchor,constant: 0),
+//            self.board.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            self.board.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.board.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
             
 //            self.backButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.backButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
@@ -82,7 +84,10 @@ class ViewController: UIViewController {
     }
     
     @objc func backStep(){
-        self.board.clearAll()
+//        self.board.clearAll()
+//        self.board.backToPreStep()
+//        self.board.color = self.board.eraserColor
+        self.board.style = .circle
     }
 
 }

@@ -10,24 +10,27 @@ import UIKit
 
 
 class LayerNode {
+    typealias Node = LayerNode
     var nodeClose: Bool = false
-    var pre: LayerNode?
-    var next: LayerNode?
+    var pre: Node?
+    var next: Node?
     
     var layerIde: String
     
-    init(pre node: LayerNode? , layerIde: String) {
+    init(pre node: Node? , layerIde: String) {
         if node != nil { self.pre = node }
         self.layerIde = layerIde
     }
     
-    deinit { self.removeAllNode() }
+    deinit {
+        print("deinit")
+        self.removeAllNode() }
     
     
     
     func addNode(ide: String){
         guard let next = self.next else{
-            let node = LayerNode(pre: self, layerIde: ide)
+            let node = Node(pre: self, layerIde: ide)
             self.next = node
             return
         }

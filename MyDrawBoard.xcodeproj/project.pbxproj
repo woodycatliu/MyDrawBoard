@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B65F5382547CB2500F00EC8 /* DrawBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B65F5372547CB2500F00EC8 /* DrawBoardViewController.swift */; };
 		5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CF52546C35E00624CD8 /* DrawBoard.swift */; };
 		5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */; };
 		5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA522E42546C1460013C7AA /* AppDelegate.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B65F5372547CB2500F00EC8 /* DrawBoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoardViewController.swift; sourceTree = "<group>"; };
 		5B660CF52546C35E00624CD8 /* DrawBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoard.swift; sourceTree = "<group>"; };
 		5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAShapeLayerNode.swift; sourceTree = "<group>"; };
 		5BA522E12546C1460013C7AA /* MyDrawBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyDrawBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +142,7 @@
 		5BA5231A2546C1560013C7AA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				5BA522E82546C1460013C7AA /* ViewController.swift */,
+				5B65F5372547CB2500F00EC8 /* DrawBoardViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -155,7 +159,6 @@
 		5BA5231C2546C16B0013C7AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
 				5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */,
 			);
 			path = Model;
@@ -297,6 +300,7 @@
 				5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */,
 				5BA522E72546C1460013C7AA /* SceneDelegate.swift in Sources */,
 				5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */,
+				5B65F5382547CB2500F00EC8 /* DrawBoardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
