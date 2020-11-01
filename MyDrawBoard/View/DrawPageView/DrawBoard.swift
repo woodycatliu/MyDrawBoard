@@ -9,7 +9,7 @@ import UIKit
 
 class DrawBoard: UIControl {
     public var color: UIColor = .systemGray6
-    public var lineWidth: CGFloat = 2
+    public var lineWidth: CGFloat = 10
     
     public var eraserColor : UIColor {
         get {
@@ -17,7 +17,7 @@ class DrawBoard: UIControl {
         }
     }
     
-    
+    public var backgriundImage: UIImage?
     
     public var style: BoardFrame = .squareWidget {
         willSet {
@@ -27,7 +27,15 @@ class DrawBoard: UIControl {
         }
     }
     
+    var isEraser:Bool = false {
+        willSet {
+            if newValue != isEraser && newValue {
+            }
+        }
+    }
+    var int = 0
     private var isOutOfBounds: Bool = false
+    private var isContinuous: Bool = false
     
     private let screenBounds: CGRect = UIScreen.main.bounds
     private var heightContraint: NSLayoutConstraint!
@@ -47,16 +55,19 @@ class DrawBoard: UIControl {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.widthContraint = self.widthAnchor.constraint(equalToConstant: self.screenBounds.width * 0.95)
         self.heightContraint = self.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1)
-        print(self.frame.maxY)
-        print(self.frame.minY)
         self.widthContraint.isActive = true
         self.heightContraint.isActive = true
+        self.layer.borderWidth = 3
+        self.layer.borderColor = UIColor.systemGray4.cgColor
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    
+    //MARK: touch方法
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.startPoint = (touches.first?.location(in: self))!
         let path = UIBezierPath(ovalIn: CGRect(x: self.startPoint.x - self.lineWidth / 4 , y: self.startPoint.y -  self.lineWidth / 4, width:  self.lineWidth / 2, height:  self.lineWidth / 2))
@@ -70,7 +81,6 @@ class DrawBoard: UIControl {
         let path = UIBezierPath()
         path.move(to: self.startPoint)
         path.addLine(to: point)
-        
         self.startPoint = point
         self.drawStroke(path: path ,color: self.color)
     }
@@ -111,7 +121,6 @@ class DrawBoard: UIControl {
     
     private func drawStroke(path: UIBezierPath ,color: UIColor){
         observedBacktrack(false)
-        
         let shapelayer = CAShapeLayer()
         let identifer = ObjectIdentifier(shapelayer).debugDescription
         shapelayer.path = path.cgPath
@@ -130,7 +139,6 @@ class DrawBoard: UIControl {
     
     private func drawDot(path: UIBezierPath , color: UIColor){
         self.observedBacktrack(false)
-       
         
         let shapelayer = CAShapeLayer()
         let identifer = ObjectIdentifier(shapelayer).debugDescription
@@ -211,9 +219,6 @@ extension DrawBoard {
         
         self.shapelayers.removeAll()
         self.removeLayerNode()
-        //        self.layerNodes.removeAll()
-        //        self.removePool.removeAll()
-        //        self.backtrackPool.removeAll()
         self.isBacktrack = false
         
         self.layer.sublayers = nil
@@ -260,6 +265,7 @@ extension DrawBoard {
             point.y = self.bounds.minY + lineWidth / 2
             self.isOutOfBounds = true
         }
+        
         return point
     }
     
@@ -267,7 +273,7 @@ extension DrawBoard {
         let center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
         
         var point = point
-
+        
         let r: Float = hypotf(Float(point.x - center.x), Float(point.y - center.y))
         let oR: Float = Float(self.bounds.width / 2 - lineWidth / 2)
         
@@ -275,6 +281,8 @@ extension DrawBoard {
             point.x = CGFloat(Float(point.x - center.x) * oR / r) + center.x
             point.y =  CGFloat(Float(point.y - center.y) * oR / r) + center.y
             self.isOutOfBounds = true
+        }else{
+            self.isOutOfBounds = false
         }
         return point
     }
@@ -302,6 +310,8 @@ extension DrawBoard {
         self.widthContraint = self.widthAnchor.constraint(equalToConstant: self.screenBounds.width * 0.95)
         self.heightContraint.isActive = true
         self.widthContraint.isActive = true
+        
+        self.layer.cornerRadius = self.frame.height == 0 ? self.screenBounds.width * 0.5 * 0.95 / 6 : self.screenBounds.width * 0.5 * 0.95 / 6
     }
     
     private func forSquareWidget(){
@@ -309,6 +319,8 @@ extension DrawBoard {
         self.widthContraint = self.widthAnchor.constraint(equalToConstant: self.screenBounds.width * 0.95)
         self.heightContraint.isActive = true
         self.widthContraint.isActive = true
+        
+        self.layer.cornerRadius = self.frame.width == 0 ? self.screenBounds.width * 0.95 / 6 : self.screenBounds.width * 0.95 / 6
     }
     
     
@@ -318,4 +330,27 @@ extension DrawBoard {
         case rectangleWidget
         case fullScreen
     }
+}
+
+
+
+//MARK: 橡皮擦
+extension DrawBoard {
+    
+    private func setBackgroudColor(){
+        guard let image = self.backgriundImage, let cgimage = image.cgImage else{
+            self.color = self.eraserColor
+            return
+        }
+        UIGraphicsBeginImageContext(self.bounds.size)
+        guard let context = UIGraphicsGetCurrentContext() else{ return }
+        context.draw(cgimage, in: self.bounds)
+        guard let imageComplete = UIGraphicsGetImageFromCurrentImageContext() else{
+            return
+        }
+        self.backgroundColor = UIColor(patternImage: imageComplete)
+        self.color = self.eraserColor
+        UIGraphicsEndImageContext()
+    }
+    
 }

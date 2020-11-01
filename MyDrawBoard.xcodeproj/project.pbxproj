@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B4C3BF82549113800FB4BC8 /* BrushInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4C3BF72549113800FB4BC8 /* BrushInputView.swift */; };
+		5B4F994C25487A540027BDDB /* MyCustomInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4F994B25487A540027BDDB /* MyCustomInputContainer.swift */; };
 		5B65F5382547CB2500F00EC8 /* DrawBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B65F5372547CB2500F00EC8 /* DrawBoardViewController.swift */; };
 		5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CF52546C35E00624CD8 /* DrawBoard.swift */; };
 		5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5B4C3BF72549113800FB4BC8 /* BrushInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushInputView.swift; sourceTree = "<group>"; };
+		5B4F994B25487A540027BDDB /* MyCustomInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCustomInputContainer.swift; sourceTree = "<group>"; };
 		5B65F5372547CB2500F00EC8 /* DrawBoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoardViewController.swift; sourceTree = "<group>"; };
 		5B660CF52546C35E00624CD8 /* DrawBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoard.swift; sourceTree = "<group>"; };
 		5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAShapeLayerNode.swift; sourceTree = "<group>"; };
@@ -84,6 +88,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B4C3BF62549110900FB4BC8 /* DrawPageView */ = {
+			isa = PBXGroup;
+			children = (
+				5B4C3BFC2549113D00FB4BC8 /* ToolBarInput */,
+				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
+			);
+			path = DrawPageView;
+			sourceTree = "<group>";
+		};
+		5B4C3BFC2549113D00FB4BC8 /* ToolBarInput */ = {
+			isa = PBXGroup;
+			children = (
+				5B4C3BF72549113800FB4BC8 /* BrushInputView.swift */,
+				5B4F994B25487A540027BDDB /* MyCustomInputContainer.swift */,
+			);
+			path = ToolBarInput;
+			sourceTree = "<group>";
+		};
 		5BA522D82546C1460013C7AA = {
 			isa = PBXGroup;
 			children = (
@@ -142,7 +164,7 @@
 		5BA5231A2546C1560013C7AA /* View */ = {
 			isa = PBXGroup;
 			children = (
-				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
+				5B4C3BF62549110900FB4BC8 /* DrawPageView */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -298,6 +320,8 @@
 				5BA522E92546C1460013C7AA /* ViewController.swift in Sources */,
 				5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */,
 				5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */,
+				5B4C3BF82549113800FB4BC8 /* BrushInputView.swift in Sources */,
+				5B4F994C25487A540027BDDB /* MyCustomInputContainer.swift in Sources */,
 				5BA522E72546C1460013C7AA /* SceneDelegate.swift in Sources */,
 				5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */,
 				5B65F5382547CB2500F00EC8 /* DrawBoardViewController.swift in Sources */,
