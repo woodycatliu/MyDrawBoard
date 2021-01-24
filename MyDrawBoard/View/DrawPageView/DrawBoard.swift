@@ -19,7 +19,7 @@ class DrawBoard: UIControl {
     
     public var backgriundImage: UIImage?
     
-    public var style: BoardFrame = .squareWidget {
+    public var style: DrawBoardStyle = .squareWidget {
         willSet {
             DispatchQueue.main.async {
                 self.changeContraints(style: newValue)
@@ -43,8 +43,10 @@ class DrawBoard: UIControl {
     
     private var shapelayers: [String :CAShapeLayer] = [:] //shapeLayer 總池
     private var startPoint: CGPoint = .zero //繪圖開始起點
+    private var isContinued: Bool = false
     
     private var isBacktrack: Bool = false  //是否有回復過
+    private var pointPool: [CGPoint] = [] //point 池
     private var layerNodes : [LayerNode] = [] //layer ide 池
     private var backtrackPool: [LayerNode] = [] //ide 池副本
     private var removePool: [LayerNode] = [] //最近移除layer 池
@@ -59,6 +61,7 @@ class DrawBoard: UIControl {
         self.heightContraint.isActive = true
         self.layer.borderWidth = 3
         self.layer.borderColor = UIColor.systemGray4.cgColor
+        self.layer.masksToBounds = true
     }
     
     required init?(coder: NSCoder) {
@@ -69,20 +72,28 @@ class DrawBoard: UIControl {
     
     //MARK: touch方法
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.startPoint = (touches.first?.location(in: self))!
+        guard let touch = touches.first else { return }
+        self.startPoint = touch.location(in: self)
         let path = UIBezierPath(ovalIn: CGRect(x: self.startPoint.x - self.lineWidth / 4 , y: self.startPoint.y -  self.lineWidth / 4, width:  self.lineWidth / 2, height:  self.lineWidth / 2))
         self.drawDot(path: path, color: self.color)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard !isOutOfBounds else{ return }
-        guard var point = touches.first?.location(in: self) else{ return }
-        point = self.fixPoint(point: point)
-        let path = UIBezierPath()
-        path.move(to: self.startPoint)
-        path.addLine(to: point)
-        self.startPoint = point
-        self.drawStroke(path: path ,color: self.color)
+//        guard !isOutOfBounds else{ return }
+        guard let touch = touches.first else { return }
+        guard let touches = event?.coalescedTouches(for: touch) else{ return }
+        drawBetter(touches: touches)
+    }
+    
+    private func drawBetter(touches: [UITouch]){
+        for touch in touches {
+            let point = touch.location(in: self)
+
+            self.pointPool.append(point)
+            if self.pointPool.count == 4 {
+                self.drawCurve()
+            }
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -90,6 +101,8 @@ class DrawBoard: UIControl {
         node.addNode(ide: "close")
         node.nodeClose = true
         self.isOutOfBounds = false
+        self.isContinued = false
+        self.pointPool = []
     }
     
     
@@ -152,6 +165,44 @@ class DrawBoard: UIControl {
         self.shapelayers[identifer] = shapelayer
         self.addLayerNodes(ide: identifer)
     }
+    // 0 1 2 3 4
+    private func drawCurve(){
+        let x1 = pointPool[1].x
+        let y1 = pointPool[1].y
+        
+        let x2 = pointPool[3].x
+        let y2 = pointPool[3].y
+        pointPool[2] = CGPoint(x: (x1 + x2) / 2, y: (y1 + y2) / 2)
+        
+        
+        let path = UIBezierPath()
+        path.move(to: startPoint)
+        path.addCurve(to: pointPool[2], controlPoint1: pointPool[0], controlPoint2: pointPool[1])
+        
+        let dotPath = UIBezierPath(ovalIn: CGRect(x: pointPool[2].x - self.lineWidth / 4 , y: pointPool[2].y - self.lineWidth / 4, width: self.lineWidth / 2 , height: self.lineWidth / 2))
+        
+        
+        let point1 = pointPool[2]
+        let point2 = pointPool[3]
+        pointPool.removeAll()
+        startPoint = point1
+        pointPool.append(point2)
+        observedBacktrack(false)
+        
+        let shapelayer = CAShapeLayer()
+        let identifer = ObjectIdentifier(shapelayer).debugDescription
+        shapelayer.path = path.cgPath
+        shapelayer.strokeColor = color.cgColor
+        shapelayer.lineWidth = self.lineWidth
+        shapelayer.fillColor = UIColor.clear.cgColor
+        
+        self.layer.addSublayer(shapelayer)
+        self.drawDot(path: dotPath, color: color)
+        self.setNeedsDisplay()
+        
+        self.shapelayers[identifer] = shapelayer
+        self.addLayerNodes(ide: identifer)
+    }
     
     private func addLayerNodes(ide: String){
         guard let lastNode = self.layerNodes.last else{
@@ -169,7 +220,7 @@ class DrawBoard: UIControl {
     }
     
     
-    public func backToPreStep(){
+    public func previousStep(){
         self.backtrackAction()
     }
     
@@ -245,10 +296,14 @@ extension DrawBoard {
 
 
 extension DrawBoard {
-    //修正touch point 避免超過畫布
+    
+    
+    /// 修正touch point 避免超過畫布
+    /// 先暫定移除，使用layer.maskToClip 可解決匯出畫布
     private func fixPoint(point: CGPoint) -> CGPoint {
         guard self.style != .circle else{ return self.fixPointAtCircle(point: point)}
         var point = point
+        
         
         if point.x > self.bounds.maxX - lineWidth / 2{
             point.x = self.bounds.maxX - lineWidth / 2
@@ -269,6 +324,7 @@ extension DrawBoard {
         return point
     }
     
+    
     private func fixPointAtCircle(point: CGPoint) -> CGPoint{
         let center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
         
@@ -288,7 +344,7 @@ extension DrawBoard {
     }
     
     
-    private func changeContraints(style: BoardFrame){
+    private func changeContraints(style: DrawBoardStyle){
         let array: [NSLayoutConstraint] = [self.heightContraint,self.widthContraint]
         array.forEach{ $0.isActive = false }
         
@@ -297,8 +353,8 @@ extension DrawBoard {
             self.forSquareWidget()
             self.layer.cornerRadius = self.frame.width / 2
             
-        case .fullScreen: break
-            
+        case .fullScreen:
+            self.forFullScreen()
         case .rectangleWidget:
             self.forRW()
         case .squareWidget:
@@ -306,6 +362,8 @@ extension DrawBoard {
         }
     }
     private func forRW(){
+        self.heightContraint.isActive = false
+        self.widthContraint.isActive = false
         self.heightContraint = self.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5)
         self.widthContraint = self.widthAnchor.constraint(equalToConstant: self.screenBounds.width * 0.95)
         self.heightContraint.isActive = true
@@ -315,6 +373,8 @@ extension DrawBoard {
     }
     
     private func forSquareWidget(){
+        self.heightContraint.isActive = false
+        self.widthContraint.isActive = false
         self.heightContraint = self.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1)
         self.widthContraint = self.widthAnchor.constraint(equalToConstant: self.screenBounds.width * 0.95)
         self.heightContraint.isActive = true
@@ -323,12 +383,33 @@ extension DrawBoard {
         self.layer.cornerRadius = self.frame.width == 0 ? self.screenBounds.width * 0.95 / 6 : self.screenBounds.width * 0.95 / 6
     }
     
+    private func forFullScreen() {
+        guard let superView = self.superview else { return }
+        self.heightContraint.isActive = false
+        self.widthContraint.isActive = false
+        
+        self.heightContraint = self.heightAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.heightAnchor)
+        self.widthContraint = self.widthAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.widthAnchor)
+        self.layer.cornerRadius = 0
+        self.heightContraint.isActive = true
+        self.widthContraint.isActive = true
+    }
     
-    enum BoardFrame {
-        case circle
-        case squareWidget
-        case rectangleWidget
-        case fullScreen
+    
+    
+    final func setDrawBoardShape(style: DrawBoardStyle) {
+        switch style {
+        case .circle:
+            self.forSquareWidget()
+            self.layer.cornerRadius = self.frame.width / 2
+            
+        case .fullScreen:
+            self.forFullScreen()
+        case .rectangleWidget:
+            self.forRW()
+        case .squareWidget:
+            self.forSquareWidget()
+        }
     }
 }
 

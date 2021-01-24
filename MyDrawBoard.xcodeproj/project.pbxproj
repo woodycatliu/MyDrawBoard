@@ -21,6 +21,14 @@
 		5BA522F42546C1470013C7AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BA522F22546C1470013C7AA /* LaunchScreen.storyboard */; };
 		5BA522FF2546C1480013C7AA /* MyDrawBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA522FE2546C1480013C7AA /* MyDrawBoardTests.swift */; };
 		5BA5230A2546C1480013C7AA /* MyDrawBoardUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA523092546C1480013C7AA /* MyDrawBoardUITests.swift */; };
+		5BEB0D8425BD4FE6002DC572 /* DrawBoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0D8325BD4FE6002DC572 /* DrawBoardViewModel.swift */; };
+		5BEB0D8C25BD51B8002DC572 /* DrawBoardEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0D8B25BD51B8002DC572 /* DrawBoardEnum.swift */; };
+		5BEB0D9225BD52CF002DC572 /* SetDBShapeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0D9125BD52CF002DC572 /* SetDBShapeCollectionViewCell.swift */; };
+		5BEB0D9825BD5552002DC572 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0D9725BD5552002DC572 /* UIViewExtension.swift */; };
+		5BEB0D9D25BD59E4002DC572 /* ShapeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0D9C25BD59E4002DC572 /* ShapeDataSource.swift */; };
+		5BEB0DB125BDACAC002DC572 /* BrushViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0DB025BDACAC002DC572 /* BrushViewModel.swift */; };
+		5BEB0DB925BDAD22002DC572 /* ColorChangeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0DB825BDAD22002DC572 /* ColorChangeDataSource.swift */; };
+		5BEB0DBE25BDAD83002DC572 /* BrushCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEB0DBD25BDAD83002DC572 /* BrushCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +69,14 @@
 		5BA523052546C1480013C7AA /* MyDrawBoardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyDrawBoardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA523092546C1480013C7AA /* MyDrawBoardUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyDrawBoardUITests.swift; sourceTree = "<group>"; };
 		5BA5230B2546C1480013C7AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5BEB0D8325BD4FE6002DC572 /* DrawBoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoardViewModel.swift; sourceTree = "<group>"; };
+		5BEB0D8B25BD51B8002DC572 /* DrawBoardEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawBoardEnum.swift; sourceTree = "<group>"; };
+		5BEB0D9125BD52CF002DC572 /* SetDBShapeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDBShapeCollectionViewCell.swift; sourceTree = "<group>"; };
+		5BEB0D9725BD5552002DC572 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		5BEB0D9C25BD59E4002DC572 /* ShapeDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeDataSource.swift; sourceTree = "<group>"; };
+		5BEB0DB025BDACAC002DC572 /* BrushViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushViewModel.swift; sourceTree = "<group>"; };
+		5BEB0DB825BDAD22002DC572 /* ColorChangeDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorChangeDataSource.swift; sourceTree = "<group>"; };
+		5BEB0DBD25BDAD83002DC572 /* BrushCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +107,8 @@
 		5B4C3BF62549110900FB4BC8 /* DrawPageView */ = {
 			isa = PBXGroup;
 			children = (
+				5BEB0D9025BD52AB002DC572 /* CollectionCell */,
+				5BEB0D8125BD4F7D002DC572 /* DrawBoradShape */,
 				5B4C3BFC2549113D00FB4BC8 /* ToolBarInput */,
 				5B660CF52546C35E00624CD8 /* DrawBoard.swift */,
 			);
@@ -129,6 +147,8 @@
 		5BA522E32546C1460013C7AA /* MyDrawBoard */ = {
 			isa = PBXGroup;
 			children = (
+				5BEB0D9625BD5511002DC572 /* Extension */,
+				5BEB0D8225BD4FD7002DC572 /* ViewModel */,
 				5BA5231C2546C16B0013C7AA /* Model */,
 				5BA5231B2546C15E0013C7AA /* Controller */,
 				5BA5231A2546C1560013C7AA /* View */,
@@ -181,9 +201,53 @@
 		5BA5231C2546C16B0013C7AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */,
+				5BEB0DA125BD9133002DC572 /* DrawBoardModel */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		5BEB0D8125BD4F7D002DC572 /* DrawBoradShape */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DrawBoradShape;
+			sourceTree = "<group>";
+		};
+		5BEB0D8225BD4FD7002DC572 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				5BEB0D8325BD4FE6002DC572 /* DrawBoardViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		5BEB0D9025BD52AB002DC572 /* CollectionCell */ = {
+			isa = PBXGroup;
+			children = (
+				5BEB0D9125BD52CF002DC572 /* SetDBShapeCollectionViewCell.swift */,
+				5BEB0DBD25BDAD83002DC572 /* BrushCollectionViewCell.swift */,
+			);
+			path = CollectionCell;
+			sourceTree = "<group>";
+		};
+		5BEB0D9625BD5511002DC572 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				5BEB0D9725BD5552002DC572 /* UIViewExtension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		5BEB0DA125BD9133002DC572 /* DrawBoardModel */ = {
+			isa = PBXGroup;
+			children = (
+				5BEB0D8B25BD51B8002DC572 /* DrawBoardEnum.swift */,
+				5B660CFA25470B8500624CD8 /* CAShapeLayerNode.swift */,
+				5BEB0DB025BDACAC002DC572 /* BrushViewModel.swift */,
+				5BEB0D9C25BD59E4002DC572 /* ShapeDataSource.swift */,
+				5BEB0DB825BDAD22002DC572 /* ColorChangeDataSource.swift */,
+			);
+			path = DrawBoardModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,12 +380,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BEB0DBE25BDAD83002DC572 /* BrushCollectionViewCell.swift in Sources */,
+				5BEB0D9D25BD59E4002DC572 /* ShapeDataSource.swift in Sources */,
 				5BA522EF2546C1460013C7AA /* MyDrawBoard.xcdatamodeld in Sources */,
 				5BA522E92546C1460013C7AA /* ViewController.swift in Sources */,
 				5B660CF62546C35E00624CD8 /* DrawBoard.swift in Sources */,
+				5BEB0D9225BD52CF002DC572 /* SetDBShapeCollectionViewCell.swift in Sources */,
 				5BA522E52546C1460013C7AA /* AppDelegate.swift in Sources */,
 				5B4C3BF82549113800FB4BC8 /* BrushInputView.swift in Sources */,
+				5BEB0D8425BD4FE6002DC572 /* DrawBoardViewModel.swift in Sources */,
 				5B4F994C25487A540027BDDB /* MyCustomInputContainer.swift in Sources */,
+				5BEB0D8C25BD51B8002DC572 /* DrawBoardEnum.swift in Sources */,
+				5BEB0DB125BDACAC002DC572 /* BrushViewModel.swift in Sources */,
+				5BEB0DB925BDAD22002DC572 /* ColorChangeDataSource.swift in Sources */,
+				5BEB0D9825BD5552002DC572 /* UIViewExtension.swift in Sources */,
 				5BA522E72546C1460013C7AA /* SceneDelegate.swift in Sources */,
 				5B660CFB25470B8500624CD8 /* CAShapeLayerNode.swift in Sources */,
 				5B65F5382547CB2500F00EC8 /* DrawBoardViewController.swift in Sources */,

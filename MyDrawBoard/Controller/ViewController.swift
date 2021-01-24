@@ -8,26 +8,32 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? .zero
+    private var bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? .zero
     
-    let board : DrawBoard = {
-        let board = DrawBoard()
-        board.style = .squareWidget
+    
+    private lazy var viewModel: DrawBoardViewModel = {
+        let drawBoardViewModel = DrawBoardViewModel()
+        return drawBoardViewModel
+    }()
+    
+    private lazy var board : DrawBoard = {
+        let board = viewModel.getDrawBoard
+        board.style = .fullScreen
         board.backgroundColor = .black
         return board
     }()
     
-    let space: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    let brushInput : MyCustomInputContainer = MyCustomInputContainer()
-    let shapeInput : MyCustomInputContainer = MyCustomInputContainer()
+    private let space: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+    private let brushInput : MyCustomInputContainer = MyCustomInputContainer()
+    private let shapeInput : MyCustomInputContainer = MyCustomInputContainer()
     
-    let brushInputView: BrushInputView = {
+    private let brushInputView: BrushInputView = {
         let brush = BrushInputView()
         brush.backgroundColor = .white
         return brush
     }()
     
-    let brushButton: UIButton = {
+   private let brushButton: UIButton = {
         let button = UIButton()
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 35)
         button.setBackgroundImage(UIImage(systemName: "pencil.tip.crop.circle"), for: .normal)
@@ -35,7 +41,10 @@ class ViewController: UIViewController {
         button.tintColor = .darkGray
         return button
     }()
-    let shapeButton: UIButton = {
+    
+    
+    // 畫布大小 - 形狀
+   private let shapeButton: UIButton = {
         let button = UIButton()
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 35)
         button.setBackgroundImage(UIImage(systemName: "square"), for: .normal)
@@ -44,31 +53,54 @@ class ViewController: UIViewController {
         return button
     }()
 
+    /// 更改畫布形狀
+    private lazy var shapeInputCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 45, height: 45)
+        layout.scrollDirection = .vertical
+        layout.headerReferenceSize = .zero
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.contentInset = .init(top: 10, left: 14, bottom: 10, right: 10)
+        cv.allowsSelection = false
+        cv.dataSource = viewModel.getShapeDataSource
+        cv.register(SetDBShapeCollectionViewCell.self, forCellWithReuseIdentifier: "shapeCellIdentifier")
+        cv.backgroundColor = .white
+        return cv
+    }()
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureItems()
+        self.setUI()
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    private func setUI(){
+        self.setTooBar()
+        self.setButtonTarget()
+        self.setNavigationBar() 
+        self.setInputView()
+        self.setDrawBoard()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    private func setNavigationBar() {
+        let barButton = UIBarButtonItem(image: UIImage(systemName: "trash"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(cleanDrawBoard))
+        
+        self.navigationItem.rightBarButtonItem = barButton
+        
+        let previouButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.turn.up.left"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(previousStep))
+        let nextButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.turn.up.right"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(nextStep))
+        self.navigationItem.leftBarButtonItems = [previouButton, nextButton]
+        
     }
     
     
     
-    private func configureItems(){
-        self.configureToolBar()
-        self.setupButtonMethod()
-        self.configureInputView()
-        self.configureDrawBoard()
-    }
-    
-    private func configureToolBar(){
+    private func setTooBar(){
         self.navigationController?.isToolbarHidden = false
         let brush : UIBarButtonItem = UIBarButtonItem(customView: brushButton)
         let shape : UIBarButtonItem = UIBarButtonItem(customView: shapeButton)
@@ -78,7 +110,7 @@ class ViewController: UIViewController {
         
     }
     
-    private func setupButtonMethod(){
+    private func setButtonTarget(){
         self.brushButton.addTarget(self, action: #selector(brushInput(_:)), for: .touchUpInside)
         self.shapeButton.addTarget(self, action: #selector(shapeInput(_:)), for: .touchUpInside)
     }
@@ -86,7 +118,7 @@ class ViewController: UIViewController {
     
     
     //MARK: 安裝input View
-    private func configureInputView(){
+    private func setInputView(){
         self.view.addSubview(self.brushInput)
         self.view.addSubview(self.shapeInput)
         self.brushInput.target = self
@@ -98,7 +130,11 @@ class ViewController: UIViewController {
         
         self.brushInputView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: bottomInset + 50 +  self.view.frame.width * 0.1 + 10 )
         self.brushInput.inputView = self.brushInputView
-        self.brushInputView.reply = self
+        self.brushInputView.delegate = self
+        
+        self.shapeInputCollectionView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: bottomInset + 70)
+        self.shapeInput.inputView = self.shapeInputCollectionView
+        
     }
     
     @objc func brushInput(_ sender: UIButton){
@@ -106,9 +142,22 @@ class ViewController: UIViewController {
         self.brushInput.becomeFirstResponder()
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
+   
     @objc func shapeInput(_ sender: UIButton){
         self.shapeInput.becomeFirstResponder()
         self.navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    @objc func cleanDrawBoard() {
+        board.clearAll()
+    }
+    
+    @objc func previousStep() {
+        board.previousStep()
+    }
+    
+    @objc func nextStep() {
+        board.backToNextStep()
     }
     
 }
@@ -118,20 +167,23 @@ class ViewController: UIViewController {
 
 extension ViewController {
     
-    private func configureDrawBoard(){
+    private func setDrawBoard(){
         self.view.addSubview(self.board)
-        self.board.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-        self.board.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        self.board.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        self.board.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
     }
-    
     
 }
 
 
-
-extension ViewController : BrushViewControllerToDrawBoard {
+extension ViewController : BrushViewDelegate {
+    func closeInputView() {
+        brushInput.leaveFirstResponder()
+    }
+    
     func replyBrush(color: UIColor, lineWine: CGFloat) {
-        self.board.color = color
-        self.board.lineWidth = lineWine
+        board.color = color
+        if color == .clear { board.color = board.eraserColor}
+        board.lineWidth = lineWine
     }
 }

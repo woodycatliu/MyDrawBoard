@@ -7,6 +7,13 @@
 
 import UIKit
 
+
+protocol BrushViewDelegate {
+    func replyBrush(color: UIColor, lineWine: CGFloat)
+    func closeInputView()
+}
+
+
 class BrushInputView: UIView {
     private let screenBounds: CGRect = UIScreen.main.bounds
     
@@ -25,7 +32,13 @@ class BrushInputView: UIView {
     
     private var bspheightLayout: NSLayoutConstraint!
     
-    public var reply: BrushViewControllerToDrawBoard?
+    public var delegate: BrushViewDelegate?
+    
+    private lazy var viewModel: BrushViewModel = {
+        let viewModel = BrushViewModel()
+        viewModel.delegate = self
+        return viewModel
+    }()
     
     public var value : Float {
         set {
@@ -52,8 +65,27 @@ class BrushInputView: UIView {
         return slider
     }()
     
-    var cv: UICollectionView!
-    private let cvFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    private(set) lazy var collectionView: UICollectionView = {
+        let width = self.screenBounds.width * cvScale
+        let cvFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        cvFlowLayout.scrollDirection = .horizontal
+        cvFlowLayout.itemSize = CGSize(width: width * cvItemScale, height: width * cvItemScale)
+        cvFlowLayout.footerReferenceSize = .zero
+        cvFlowLayout.headerReferenceSize = .zero
+        cvFlowLayout.minimumInteritemSpacing = cvSpacing
+        cvFlowLayout.minimumLineSpacing = 5
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: cvFlowLayout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = UIColor.systemGray6.withAlphaComponent(0.5)
+        cv.register(BrushCollectionViewCell.self, forCellWithReuseIdentifier: viewModel.getDataSource().identifer)
+        cv.dataSource = viewModel.getDataSource()
+        cv.delegate = viewModel.getDataSource()
+        cv.layer.cornerRadius = 22.5
+        return cv
+    }()
+    
+    
     
     private let bSPContainer: UIView = {
         let view = UIView()
@@ -74,7 +106,7 @@ class BrushInputView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.configureItems()
+        self.setItems()
     }
     
     required init?(coder: NSCoder) {
@@ -83,49 +115,34 @@ class BrushInputView: UIView {
     
     
     
-    private func configureItems(){
-        configureCollection()
-        configureConstraint()
+    private func setItems(){
+        setUI()
         configureBrushPreview()
         setupButtonTarget()
     }
     
-    private func configureCollection(){
-        let width = self.screenBounds.width * cvScale
-        cvFlowLayout.scrollDirection = .horizontal
-        cvFlowLayout.estimatedItemSize = CGSize(width: width * cvItemScale, height: width * cvItemScale)
-        cvFlowLayout.footerReferenceSize = .zero
-        cvFlowLayout.headerReferenceSize = .zero
-        cvFlowLayout.minimumInteritemSpacing = cvSpacing
-        cvFlowLayout.minimumLineSpacing = 0
-        
-        cv = UICollectionView(frame: .zero, collectionViewLayout: self.cvFlowLayout)
-        cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = .systemGray
-        
-    }
     
-    private func configureConstraint(){
+    private func setUI(){
         let width = self.screenBounds.width
         
-        self.addSubview(self.cv)
-        self.addSubview(self.bSPContainer)
-        self.addSubview(self.slider)
+        self.addSubview(collectionView)
+        self.addSubview(bSPContainer)
+        self.addSubview(slider)
         
         
-        cv.topAnchor.constraint(equalTo: self.topAnchor, constant: commonTopSpacing).isActive = true
-        cv.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leadingSpacing).isActive = true
-        cv.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -trailSpacing).isActive = true
-        cv.heightAnchor.constraint(equalToConstant: width * cvScale * cvItemScale).isActive = true
+        collectionView.topAnchor.constraint(equalTo: topAnchor, constant: commonTopSpacing).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leadingSpacing).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -trailSpacing).isActive = true
+        collectionView.heightAnchor.constraint(equalToConstant: width * cvScale * cvItemScale).isActive = true
         
-        bSPContainer.topAnchor.constraint(equalTo: self.cv.bottomAnchor, constant: 0).isActive = true
-        bSPContainer.widthAnchor.constraint(equalTo: self.bSPContainer.heightAnchor, multiplier: 1).isActive = true
+        bSPContainer.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0).isActive = true
+        bSPContainer.widthAnchor.constraint(equalTo: bSPContainer.heightAnchor, multiplier: 1).isActive = true
         bSPContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         
-        slider.centerYAnchor.constraint(equalTo: self.bSPContainer.centerYAnchor).isActive = true
-        slider.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: leadingSpacing).isActive = true
-        slider.trailingAnchor.constraint(equalTo: self.bSPContainer.leadingAnchor, constant: 0).isActive = true
+        slider.centerYAnchor.constraint(equalTo: bSPContainer.centerYAnchor).isActive = true
+        slider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leadingSpacing).isActive = true
+        slider.trailingAnchor.constraint(equalTo: bSPContainer.leadingAnchor, constant: 0).isActive = true
         slider.widthAnchor.constraint(equalToConstant: width * sliderScale).isActive = true
     }
     
@@ -133,9 +150,9 @@ class BrushInputView: UIView {
     private func configureBrushPreview(){
         bSPContainer.addSubview(brushSizePreview)
         
-        brushSizePreview.centerXAnchor.constraint(equalTo: self.bSPContainer.centerXAnchor).isActive = true
-        brushSizePreview.centerYAnchor.constraint(equalTo: self.bSPContainer.centerYAnchor).isActive = true
-        brushSizePreview.widthAnchor.constraint(equalTo: self.brushSizePreview.heightAnchor).isActive = true
+        brushSizePreview.centerXAnchor.constraint(equalTo: bSPContainer.centerXAnchor).isActive = true
+        brushSizePreview.centerYAnchor.constraint(equalTo: bSPContainer.centerYAnchor).isActive = true
+        brushSizePreview.widthAnchor.constraint(equalTo: brushSizePreview.heightAnchor).isActive = true
         bspheightLayout = brushSizePreview.heightAnchor.constraint(equalToConstant: 5)
         bspheightLayout.isActive = true
         self.brushSizePreview.layer.cornerRadius = 2.5
@@ -149,13 +166,18 @@ class BrushInputView: UIView {
         bspheightLayout.constant = CGFloat(sender.value)
         brushSizePreview.layer.cornerRadius = brushSizePreview.frame.height / 2
         
-        self.reply?.replyBrush(color: self.color, lineWine: CGFloat(sender.value))
+        self.delegate?.replyBrush(color: color, lineWine: CGFloat(sender.value))
     }
     
 }
 
 
-//MARK: 回傳slider/Color 新值 To DrawBoard
-protocol BrushViewControllerToDrawBoard {
-    func replyBrush(color: UIColor,lineWine: CGFloat)
+
+extension BrushInputView: BrushViewModelDelegate {
+    func changeColor(_ color: UIColor) {
+        self.color = color
+        delegate?.replyBrush(color: color, lineWine: CGFloat(value))
+        delegate?.closeInputView()
+        
+    }
 }
